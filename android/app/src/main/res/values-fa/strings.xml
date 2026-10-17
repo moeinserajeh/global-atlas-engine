@@ -13,4 +13,7 @@
     <string name="data_source">منبع داده</string>
     <string name="retry">تلاش دوباره</string>
     <string name="clear_history">پاک‌کردن تاریخچه</string>
+    <string name="nav_map">نقشه</string>
+    <string name="nav_search">جست‌وجو</string>
+    <string name="nav_offline">آفلاین</string>
 </resources>
