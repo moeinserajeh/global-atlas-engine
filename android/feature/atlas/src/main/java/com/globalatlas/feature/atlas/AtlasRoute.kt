@@ -8,5 +8,10 @@ import androidx.compose.ui.Modifier
 @Composable
 fun AtlasRoute(viewModel: AtlasViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) { viewModel.dispatch(AtlasIntent.Load) }
-    AtlasMapScreen(modifier = Modifier)
+    AtlasMapScreen(
+        modifier = Modifier,
+        onCountrySelected = { iso2, name ->
+            viewModel.dispatch(AtlasIntent.CountrySelected(iso2, name))
+        }
+    )
 }
