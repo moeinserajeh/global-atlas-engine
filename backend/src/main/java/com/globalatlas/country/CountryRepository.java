@@ -32,6 +32,27 @@ public class CountryRepository {
         );
     }
 
+    public List<CountrySummary> search(String query, int limit) {
+        String pattern = "%" + query.toLowerCase() + "%";
+        return jdbcTemplate.query("""
+                SELECT id, iso2, iso3, name_en, name_fa
+                FROM countries
+                WHERE lower(name_en) LIKE ? OR lower(coalesce(name_fa, '')) LIKE ?
+                   OR lower(iso2) = ? OR lower(iso3) = ?
+                ORDER BY name_en
+                LIMIT ?
+                """,
+                (rs, rowNum) -> new CountrySummary(
+                        rs.getLong("id"),
+                        rs.getString("iso2").trim(),
+                        rs.getString("iso3").trim(),
+                        rs.getString("name_en"),
+                        rs.getString("name_fa")
+                ),
+                pattern, pattern, query.toUpperCase(), query.toUpperCase(), limit
+        );
+    }
+
     public Optional<CountrySummary> findByIso2(String iso2) {
         return jdbcTemplate.query("""
                 SELECT id, iso2, iso3, name_en, name_fa
