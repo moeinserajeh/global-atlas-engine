@@ -102,3 +102,8 @@ Initial project documentation and CI/CD plan. The application, backend, and work
 ## Android multi-module architecture
 
 The Android client is organized into `app`, reusable `core` modules, and `feature` modules. See [`android/ARCHITECTURE.md`](android/ARCHITECTURE.md) for module responsibilities and current implementation status. The Atlas map implementation lives in `feature:atlas`; Hilt network providers live in `core:network`.
+
+
+## Product requirements and delivery checklist
+
+See the [complete PRD with implementation checkboxes](docs/PRD.md). Checked boxes record committed implementation artifacts; MVP release acceptance remains separately tracked and unverified until CI and end-to-end testing pass.
