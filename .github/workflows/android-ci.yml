@@ -34,6 +34,6 @@ jobs:
           gradle-version: "9.6.0"
       - uses: android-actions/setup-android@v3
       - name: Install Android SDK platform
-        run: sdkmanager "platforms;android-37" "build-tools;36.0.0"
+        run: sdkmanager "platforms;android-37" "build-tools;37.0.0"
       - name: Assemble debug
-        run: gradle assembleDebug
+        run: gradle :app:assembleDebug :app:testDebugUnitTest
