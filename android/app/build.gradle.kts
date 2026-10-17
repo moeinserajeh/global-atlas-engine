@@ -10,8 +10,8 @@ android {
     compileSdk = 37
 
     defaultConfig {
-                buildConfigField("String", "ATLAS_BASE_URL", "\\\"http://10.0.2.2:8080/\\\"")
         applicationId = "com.globalatlas"
+        buildConfigField("String", "ATLAS_BASE_URL", "\"http://10.0.2.2:8080/\"")
         minSdk = 26
         targetSdk = 37
         versionCode = 1
@@ -23,6 +23,7 @@ android {
         compose = true
         buildConfig = true
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
