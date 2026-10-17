@@ -5,10 +5,21 @@ plugins {
  id("com.google.devtools.ksp")
 }
 android {
- namespace = "com.globalatlas"; compileSdk = 37
- defaultConfig { applicationId = "com.globalatlas"; minSdk = 26; targetSdk = 37; versionCode = 1; versionName = "0.2.0"; testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+ namespace = "com.globalatlas"
+ compileSdk = 36
+ defaultConfig {
+  applicationId = "com.globalatlas"
+  minSdk = 26
+  targetSdk = 36
+  versionCode = 1
+  versionName = "0.2.1"
+  testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+ }
  buildFeatures { compose = true; buildConfig = true }
- compileOptions { sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaVersion.VERSION_21 }
+ compileOptions {
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
+ }
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21) } }
 dependencies {
