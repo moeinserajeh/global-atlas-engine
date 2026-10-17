@@ -1,7 +1,5 @@
 package com.globalatlas.feature.downloads
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.globalatlas.core.database.AdministrativeRegionEntity
 import com.globalatlas.core.database.CountryEntity
 import com.globalatlas.core.database.OfflineAtlasStore
@@ -32,14 +32,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-data class DownloadsState(val isWorking: Boolean = false, val status: String? = null, val error: String? = null)
+data class DownloadsState(
+    val isWorking: Boolean = false,
+    val status: String? = null,
+    val error: String? = null
+)
 
 @HiltViewModel
-class DownloadsViewModel @Inject constructor(private val store: OfflineAtlasStore, private val api: AtlasApi) : ViewModel() {
+class DownloadsViewModel @Inject constructor(
+    private val store: OfflineAtlasStore,
+    private val api: AtlasApi
+) : ViewModel() {
     val countries = store.observeCountries().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val recent = store.observeRecent(100).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     private val _state = MutableStateFlow(DownloadsState())
@@ -58,14 +64,14 @@ class DownloadsViewModel @Inject constructor(private val store: OfflineAtlasStor
                     page.forEach { element ->
                         if (element.isJsonObject) {
                             val item = element.asJsonObject
-                            val iso2 = item.get("iso2")?.takeUnless { it.isJsonNull }?.asString?.uppercase().orEmpty()
-                            val nameEn = item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
+                            val iso2 = item.stringOrNull("iso2")?.uppercase().orEmpty()
+                            val nameEn = item.stringOrNull("nameEn").orEmpty()
                             if (iso2.length == 2 && nameEn.isNotBlank()) {
                                 all += CountryEntity(
                                     iso2 = iso2,
-                                    iso3 = item.get("iso3")?.takeUnless { it.isJsonNull }?.asString,
+                                    iso3 = item.stringOrNull("iso3"),
                                     nameEn = nameEn,
-                                    nameFa = item.get("nameFa")?.takeUnless { it.isJsonNull }?.asString,
+                                    nameFa = item.stringOrNull("nameFa"),
                                     cachedAtEpochMillis = System.currentTimeMillis()
                                 )
                             }
@@ -78,49 +84,85 @@ class DownloadsViewModel @Inject constructor(private val store: OfflineAtlasStor
                 _state.value = DownloadsState(status = "ذخیره شد: ${all.size} کشور")
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                _state.value = DownloadsState(error = if (e is HttpException) "خطای سرور: ${e.code()}" else "دریافت کشورها ناموفق بود.")
+                _state.value = DownloadsState(error = e.toUserMessage("دریافت کشورها ناموفق بود."))
             }
         }
     }
 
     fun downloadRegions(countryIso2: String) {
-        if (_state.value.isWorking) return
+        val iso2 = countryIso2.trim().uppercase()
+        if (iso2.length != 2 || _state.value.isWorking) return
         viewModelScope.launch {
-            _state.value = DownloadsState(isWorking = true, status = "در حال دریافت استان‌های ${countryIso2.uppercase()}…")
+            _state.value = DownloadsState(isWorking = true, status = "در حال دریافت اطلاعات و هندسه ${iso2}…")
             try {
-                val all = mutableListOf<AdministrativeRegionEntity>()
+                val summaries = mutableListOf<AdministrativeRegionEntity>()
                 var offset = 0
                 while (true) {
-                    val page = api.regions(countryIso2.uppercase(), 100, offset)
+                    val page = api.regions(iso2, 100, offset)
                     if (page.size() == 0) break
                     page.forEach { element ->
                         if (element.isJsonObject) {
                             val item = element.asJsonObject
-                            val id = item.get("id")?.takeUnless { it.isJsonNull }?.asLong
-                            val nameEn = item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
-                            if (id != null && nameEn.isNotBlank()) all += AdministrativeRegionEntity(
-                                id = id,
-                                countryIso2 = countryIso2.uppercase(),
-                                nameEn = nameEn,
-                                nameFa = item.get("nameFa")?.takeUnless { it.isJsonNull }?.asString,
-                                level = item.get("adminLevel")?.takeUnless { it.isJsonNull }?.asInt ?: 1,
-                                geometryJson = null,
-                                cachedAtEpochMillis = System.currentTimeMillis()
-                            )
+                            val id = item.longOrNull("id")
+                            val nameEn = item.stringOrNull("nameEn").orEmpty()
+                            if (id != null && nameEn.isNotBlank()) {
+                                summaries += AdministrativeRegionEntity(
+                                    id = id,
+                                    countryIso2 = iso2,
+                                    nameEn = nameEn,
+                                    nameFa = item.stringOrNull("nameFa"),
+                                    level = item.intOrNull("adminLevel") ?: 1,
+                                    geometryJson = null,
+                                    cachedAtEpochMillis = System.currentTimeMillis()
+                                )
+                            }
                         }
                     }
                     offset += page.size()
                     if (page.size() < 100) break
                 }
-                store.replaceCountryRegions(countryIso2, all)
-                _state.value = DownloadsState(status = "ذخیره شد: ${all.size} استان/منطقه برای ${countryIso2.uppercase()}")
+
+                val geometryResponse = api.regionGeometry(iso2)
+                val geometryById = mutableMapOf<Long, String>()
+                geometryResponse.getAsJsonArray("features")?.forEach { featureElement ->
+                    if (!featureElement.isJsonObject) return@forEach
+                    val feature = featureElement.asJsonObject
+                    val properties = feature.getAsJsonObject("properties")
+                    val id = properties?.longOrNull("id") ?: feature.longOrNull("id") ?: return@forEach
+                    val geometry = feature.get("geometry")?.takeUnless { it.isJsonNull } ?: return@forEach
+                    geometryById[id] = geometry.toString()
+                }
+
+                val cached = summaries.map { region ->
+                    region.copy(
+                        geometryJson = geometryById[region.id],
+                        cachedAtEpochMillis = System.currentTimeMillis()
+                    )
+                }
+                store.replaceCountryRegions(iso2, cached)
+                val geometryCount = cached.count { !it.geometryJson.isNullOrBlank() }
+                _state.value = DownloadsState(
+                    status = "ذخیره شد: ${cached.size} منطقه، هندسهٔ ${geometryCount} منطقه برای ${iso2}"
+                )
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
-                _state.value = DownloadsState(error = if (e is HttpException) "خطای سرور: ${e.code()}" else "دریافت استان‌ها ناموفق بود.")
+                _state.value = DownloadsState(error = e.toUserMessage("دریافت استان‌ها و هندسه ناموفق بود."))
             }
         }
     }
 }
+
+private fun com.google.gson.JsonObject.stringOrNull(name: String): String? =
+    get(name)?.takeUnless { it.isJsonNull }?.asString
+
+private fun com.google.gson.JsonObject.longOrNull(name: String): Long? =
+    get(name)?.takeUnless { it.isJsonNull }?.asLong
+
+private fun com.google.gson.JsonObject.intOrNull(name: String): Int? =
+    get(name)?.takeUnless { it.isJsonNull }?.asInt
+
+private fun Exception.toUserMessage(fallback: String): String =
+    if (this is HttpException) "خطای سرور: ${code()}" else fallback
 
 @Composable
 fun DownloadsRoute(modifier: Modifier = Modifier, viewModel: DownloadsViewModel = hiltViewModel()) {
@@ -143,14 +185,18 @@ fun DownloadsRoute(modifier: Modifier = Modifier, viewModel: DownloadsViewModel 
                         Text(country.nameFa ?: country.nameEn)
                         Text(country.iso2, style = MaterialTheme.typography.bodySmall)
                     }
-                    Button(onClick = { viewModel.downloadRegions(country.iso2) }, enabled = !state.isWorking) { Text("دانلود استان‌ها") }
+                    Button(onClick = { viewModel.downloadRegions(country.iso2) }, enabled = !state.isWorking) {
+                        Text("دانلود مناطق و هندسه")
+                    }
                 }
             }
         }
         Text("بازدیدهای اخیر: ${recent.size}", style = MaterialTheme.typography.titleMedium)
         if (recent.isNotEmpty()) {
             LazyColumn(modifier = Modifier.weight(0.5f)) {
-                items(recent, key = { it.entityType + ":" + it.entityId }) { item -> Text(item.displayName, modifier = Modifier.padding(vertical = 4.dp)) }
+                items(recent, key = { it.entityType + ":" + it.entityId }) { item ->
+                    Text(item.displayName, modifier = Modifier.padding(vertical = 4.dp))
+                }
             }
         }
     }
