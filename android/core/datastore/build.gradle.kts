@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.globalatlas.core.datastore"
-    compileSdk = 37
+    compileSdk = 36
     defaultConfig { minSdk = 26 }
 }
 
