@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun AtlasRoute(viewModel:AtlasViewModel=hiltViewModel()) {
+fun AtlasRoute(onCountrySelected: (String, String) -> Unit = { _, _ -> }, onRegionSelected: (Long, String) -> Unit = { _, _ -> }, viewModel:AtlasViewModel=hiltViewModel()) {
  val state by viewModel.state.collectAsState()
  LaunchedEffect(Unit) { viewModel.dispatch(AtlasIntent.Load) }
  Box {
-  AtlasMapScreen(onCountrySelected={ iso2,name -> viewModel.dispatch(AtlasIntent.CountrySelected(iso2,name)) })
+  AtlasMapScreen(onCountrySelected={ iso2,name -> viewModel.dispatch(AtlasIntent.CountrySelected(iso2,name)); onCountrySelected(iso2,name) })
   Surface(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(12.dp),shape=MaterialTheme.shapes.large,tonalElevation=4.dp) {
    Column(Modifier.padding(12.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
     OutlinedTextField(value=state.searchQuery,onValueChange={viewModel.dispatch(AtlasIntent.SearchChanged(it))},modifier=Modifier.fillMaxWidth(),singleLine=true,label={Text("جست‌وجوی کشور یا استان")},trailingIcon={if(state.searchQuery.isNotEmpty()) TextButton(onClick={viewModel.dispatch(AtlasIntent.ClearSearch)}) { Text("پاک") }})
@@ -42,8 +42,8 @@ fun AtlasRoute(viewModel:AtlasViewModel=hiltViewModel()) {
       val title=item.get("nameFa")?.takeUnless{it.isJsonNull}?.asString?:item.get("nameEn")?.takeUnless{it.isJsonNull}?.asString.orEmpty()
       val subtitle=if(type=="REGION") item.get("countryNameFa")?.takeUnless{it.isJsonNull}?.asString?:item.get("countryNameEn")?.takeUnless{it.isJsonNull}?.asString.orEmpty() else item.get("iso2")?.asString.orEmpty()
       Column(Modifier.fillMaxWidth().clickable {
-       if(type=="COUNTRY") viewModel.dispatch(AtlasIntent.CountrySelected(item.get("iso2")?.asString.orEmpty(),title))
-       else viewModel.dispatch(AtlasIntent.RegionSelected(item.get("id")?.asLong?:-1L,title))
+       if(type=="COUNTRY") { val iso2=item.get("iso2")?.asString.orEmpty(); viewModel.dispatch(AtlasIntent.CountrySelected(iso2,title)); onCountrySelected(iso2,title) }
+       else { val id=item.get("id")?.asLong?:-1L; viewModel.dispatch(AtlasIntent.RegionSelected(id,title)); onRegionSelected(id,title) }
        viewModel.dispatch(AtlasIntent.ClearSearch)
       }.padding(vertical=8.dp)) { Text(title,style=MaterialTheme.typography.titleSmall); Text(subtitle,style=MaterialTheme.typography.bodySmall) }
      }
