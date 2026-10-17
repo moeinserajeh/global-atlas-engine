@@ -108,7 +108,7 @@ fun AtlasRoute(
                     Button(
                         onClick = { onCountrySelected(state.selectedCountryIso2!!, state.selectedCountryName.orEmpty()) },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("جزئیات \${state.selectedCountryName ?: state.selectedCountryIso2}") }
+                    ) { Text("جزئیات ${state.selectedCountryName ?: state.selectedCountryIso2}") }
                 }
             }
         }
