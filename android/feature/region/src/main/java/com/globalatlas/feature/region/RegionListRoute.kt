@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -26,11 +27,11 @@ fun RegionListRoute(countryIso2: String, onRegionSelected: (Long, String) -> Uni
     val state by viewModel.state.collectAsState()
     LaunchedEffect(countryIso2) { viewModel.load(countryIso2) }
     Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("استان‌ها و مناطق ${countryIso2.uppercase()}", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.regions_title, countryIso2.uppercase()), style = MaterialTheme.typography.headlineSmall)
         when {
             state.loading -> CircularProgressIndicator()
-            state.error != null -> { Text(state.error!!, color = MaterialTheme.colorScheme.error); TextButton(onClick = { viewModel.load(countryIso2, retry = true) }) { Text("تلاش دوباره") } }
-            state.regions.isEmpty() -> Text("برای این کشور منطقه‌ای ثبت نشده است.")
+            state.error != null -> { Text(state.error!!, color = MaterialTheme.colorScheme.error); TextButton(onClick = { viewModel.load(countryIso2, retry = true) }) { Text(stringResource(R.string.retry)) } }
+            state.regions.isEmpty() -> Text(stringResource(R.string.no_regions))
             else -> LazyColumn {
                 items(state.regions, key = { it.get("id")?.toString() ?: it.hashCode().toString() }) { item ->
                     val name = item.get("nameFa")?.takeUnless { it.isJsonNull }?.asString ?: item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
