@@ -46,7 +46,7 @@ fun DownloadsRoute(modifier: Modifier = Modifier, viewModel: DownloadsViewModel 
         if (recent.isNotEmpty()) {
             LazyColumn {
                 items(recent, key = { it.type + ":" + it.itemId }) { item ->
-                    Text(item.name, modifier = Modifier.padding(vertical = 4.dp))
+                    Text(item.displayName, modifier = Modifier.padding(vertical = 4.dp))
                 }
             }
         }
