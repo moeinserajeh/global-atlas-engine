@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="map_select_country">برای انتخاب کشور روی نقشه بزنید</string>
+    <string name="map_region_selected">منطقه انتخاب شد</string>
+    <string name="map_load_countries_error">مرزهای کشورها دریافت نشد؛ اجرای بک‌اند و ورود داده‌های جغرافیایی را بررسی کنید.</string>
+    <string name="map_load_regions_error">استان‌ها یا مناطق این کشور دریافت نشدند.</string>
+    <string name="map_reset">بازنشانی</string>
+    <string name="map_attribution">© OpenStreetMap contributors · © MapLibre</string>
+</resources>
