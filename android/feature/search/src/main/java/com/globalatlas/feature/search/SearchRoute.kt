@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -31,18 +32,18 @@ fun SearchRoute(
 ) {
     val state by viewModel.state.collectAsState()
     Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("جست‌وجوی اطلس", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.search_title), style = MaterialTheme.typography.headlineSmall)
         OutlinedTextField(
             value = state.query,
             onValueChange = { viewModel.dispatch(SearchIntent.QueryChanged(it)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            label = { Text("نام کشور یا استان") },
-            trailingIcon = { if (state.query.isNotEmpty()) TextButton(onClick = { viewModel.dispatch(SearchIntent.Clear) }) { Text("پاک") } }
+            label = { Text(stringResource(R.string.search_hint)) },
+            trailingIcon = { if (state.query.isNotEmpty()) TextButton(onClick = { viewModel.dispatch(SearchIntent.Clear) }) { Text(stringResource(R.string.clear)) } }
         )
         if (state.isLoading) CircularProgressIndicator()
-        state.error?.let { Row { Text(it, modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.error); TextButton(onClick = { viewModel.dispatch(SearchIntent.Retry) }) { Text("تلاش مجدد") } } }
-        if (state.query.trim().length >= 2 && !state.isLoading && state.error == null && state.results.isEmpty()) Text("نتیجه‌ای پیدا نشد.")
+        state.error?.let { Row { Text(it, modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.error); TextButton(onClick = { viewModel.dispatch(SearchIntent.Retry) }) { Text(stringResource(R.string.retry)) } } }
+        if (state.query.trim().length >= 2 && !state.isLoading && state.error == null && state.results.isEmpty()) Text(stringResource(R.string.no_results))
         LazyColumn {
             items(state.results, key = { it.get("_type")?.asString.orEmpty() + ":" + (it.get("id")?.toString() ?: it.get("iso2")?.asString.orEmpty()) }) { item ->
                 val type = item.get("_type")?.asString.orEmpty()
