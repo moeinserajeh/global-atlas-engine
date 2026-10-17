@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.weight
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +25,7 @@ import com.globalatlas.core.designsystem.AtlasTheme
 import com.globalatlas.feature.atlas.AtlasRoute
 import com.globalatlas.feature.country.CountryDetailRoute
 import com.globalatlas.feature.downloads.DownloadsRoute
+import com.globalatlas.feature.region.RegionDetailRoute
 import com.globalatlas.feature.region.RegionListRoute
 import com.globalatlas.feature.search.SearchRoute
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,49 +52,36 @@ private fun AtlasNavigation() {
         NavHost(navController = nav, startDestination = "atlas", modifier = Modifier.weight(1f)) {
             composable("atlas") {
                 AtlasRoute(
-                    onCountrySelected = { iso2, _ -> nav.navigate("country/${iso2.uppercase()}") },
-                    onRegionSelected = { id, name -> nav.navigate("region-detail/$id/${android.net.Uri.encode(name)}") }
+                    onCountrySelected = { iso2, _ -> nav.navigate("country/\${iso2.uppercase()}") },
+                    onRegionSelected = { id, name -> nav.navigate("region-detail/$id/\${android.net.Uri.encode(name)}") }
                 )
             }
             composable("search") {
                 SearchRoute(
-                    onCountrySelected = { iso2, _ -> nav.navigate("country/${iso2.uppercase()}") },
-                    onRegionSelected = { id, name -> nav.navigate("region-detail/$id/${android.net.Uri.encode(name)}") }
+                    onCountrySelected = { iso2, _ -> nav.navigate("country/\${iso2.uppercase()}") },
+                    onRegionSelected = { id, name -> nav.navigate("region-detail/$id/\${android.net.Uri.encode(name)}") }
                 )
             }
             composable("downloads") { DownloadsRoute() }
             composable("country/{iso2}", arguments = listOf(navArgument("iso2") { type = NavType.StringType })) { entry ->
                 val iso2 = entry.arguments?.getString("iso2").orEmpty()
-                Column {
-                    Button(onClick = { nav.navigate("regions/$iso2") }) { Text("نمایش استان‌ها") }
-                    CountryDetailRoute(iso2 = iso2)
-                }
+                CountryDetailRoute(iso2 = iso2, onShowRegions = { nav.navigate("regions/$it") })
             }
             composable("regions/{iso2}", arguments = listOf(navArgument("iso2") { type = NavType.StringType })) { entry ->
                 RegionListRoute(
                     countryIso2 = entry.arguments?.getString("iso2").orEmpty(),
-                    onRegionSelected = { id, name -> nav.navigate("region-detail/$id/${android.net.Uri.encode(name)}") }
+                    onRegionSelected = { id, name -> nav.navigate("region-detail/$id/\${android.net.Uri.encode(name)}") }
                 )
             }
             composable(
                 "region-detail/{id}/{name}",
                 arguments = listOf(navArgument("id") { type = NavType.LongType }, navArgument("name") { type = NavType.StringType })
             ) { entry ->
-                RegionDetailPlaceholder(
+                RegionDetailRoute(
                     id = entry.arguments?.getLong("id") ?: -1L,
-                    name = entry.arguments?.getString("name").orEmpty()
+                    fallbackName = entry.arguments?.getString("name").orEmpty()
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun RegionDetailPlaceholder(id: Long, name: String) {
-    Column(Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("جزئیات منطقه", style = MaterialTheme.typography.headlineSmall)
-        Text(name, style = MaterialTheme.typography.titleLarge)
-        Text("شناسه: $id")
-        Text("جزئیات تکمیلی این منطقه هنوز از API جزئیات دریافت نمی‌شود.")
     }
 }

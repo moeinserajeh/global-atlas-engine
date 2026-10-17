@@ -48,14 +48,22 @@ fun SearchRoute(
                 val type = item.get("_type")?.asString.orEmpty()
                 val title = item.get("nameFa")?.takeUnless { it.isJsonNull }?.asString
                     ?: item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
-                val subtitle = if (type == "REGION") item.get("countryNameFa")?.takeUnless { it.isJsonNull }?.asString
-                    ?: item.get("countryNameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
-                    else item.get("iso2")?.asString.orEmpty()
+                val nameEn = item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
+                val subtitle = if (type == "REGION") {
+                    val countryFa = item.get("countryNameFa")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
+                    val countryEn = item.get("countryNameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
+                    listOf(countryFa, countryEn).filter { it.isNotBlank() }.distinct().joinToString(" · ")
+                } else {
+                    val iso2 = item.get("iso2")?.asString.orEmpty()
+                    val iso3 = item.get("iso3")?.asString.orEmpty()
+                    listOf(iso2, iso3, nameEn).filter { it.isNotBlank() }.distinct().joinToString(" · ")
+                }
                 Column(Modifier.fillMaxWidth().clickable {
                     if (type == "COUNTRY") onCountrySelected(item.get("iso2")?.asString.orEmpty(), title)
                     else onRegionSelected(item.get("id")?.asLong ?: -1L, title)
                 }.padding(vertical = 8.dp)) {
                     Text(title, style = MaterialTheme.typography.titleMedium)
+                    if (nameEn.isNotBlank() && nameEn != title) Text(nameEn, style = MaterialTheme.typography.bodyMedium)
                     Text(subtitle, style = MaterialTheme.typography.bodySmall)
                     HorizontalDivider()
                 }
