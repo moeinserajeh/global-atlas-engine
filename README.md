@@ -18,7 +18,8 @@ An interactive world atlas for Android, designed to explore countries and their 
 
 ### Backend
 
-- Java with the latest compatible stable Spring Boot release
+- **Java 21 (LTS)**
+- **Spring Boot 3.x**, selecting the latest stable patch compatible with Java 21 at implementation time
 - Spring Dependency Injection / IoC and constructor injection
 - Spring Web, Spring Validation, Spring Security when authentication is introduced
 - PostgreSQL with PostGIS for spatial queries and geometry
@@ -35,10 +36,10 @@ Baseline candidates checked on 2026-10-17:
 - Kotlin 2.4.21
 - Jetpack Compose BOM 2026.09.00
 - Android Gradle Plugin 9.x, with built-in Kotlin support configured according to its migration guidance
-- Java LTS toolchain compatible with the selected Spring Boot release
-- Latest stable Spring Boot, PostgreSQL, and PostGIS releases compatible with the deployment environment
+- Java 21 LTS toolchain
+- Latest stable Spring Boot 3.x patch compatible with Java 21, plus compatible stable PostgreSQL and PostGIS releases
 
-Re-check official compatibility matrices before pinning the complete toolchain, especially AGP/Gradle/JDK, Hilt/KSP, Spring Boot/JDK, and PostgreSQL/PostGIS combinations.
+Re-check official compatibility matrices before pinning the complete toolchain, especially AGP/Gradle/JDK, Hilt/KSP, Spring Boot 3.x/Java 21, and PostgreSQL/PostGIS combinations.
 
 ## Product scope
 
