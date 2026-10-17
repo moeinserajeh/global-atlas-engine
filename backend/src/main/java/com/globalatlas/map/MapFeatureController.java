@@ -33,6 +33,27 @@ public class MapFeatureController {
                 """, String.class);
     }
 
+
+    @GetMapping(value = "/countries/{iso2}/regions", produces = "application/geo+json")
+    public String regionFeaturesByCountry(@org.springframework.web.bind.annotation.PathVariable String iso2) {
+        return jdbcTemplate.queryForObject("""
+                SELECT json_build_object(
+                    'type', 'FeatureCollection',
+                    'features', COALESCE(json_agg(json_build_object(
+                        'type', 'Feature', 'id', r.id,
+                        'geometry', ST_AsGeoJSON(r.geometry)::json,
+                        'properties', json_build_object(
+                            'id', r.id, 'code', r.code, 'nameEn', r.name_en,
+                            'nameFa', r.name_fa, 'countryId', r.country_id
+                        )
+                    )), '[]'::json)
+                )::text
+                FROM administrative_regions r
+                JOIN countries c ON c.id = r.country_id
+                WHERE c.iso2 = ? AND r.geometry IS NOT NULL
+                """, String.class, iso2.toUpperCase());
+    }
+
     @GetMapping(value = "/regions", produces = "application/geo+json")
     public String regionFeatures() {
         return jdbcTemplate.queryForObject("""
