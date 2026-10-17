@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/v1/countries")
 public class CountryController {
-    private static final int DEFAULT_PAGE_SIZE = 50;
     private static final int MAX_PAGE_SIZE = 100;
 
     private final CountryRepository countryRepository;
@@ -33,7 +32,7 @@ public class CountryController {
                     "limit must be 1..100 and offset must be non-negative"
             );
         }
-        return countryRepository.findAll(Math.min(limit, DEFAULT_PAGE_SIZE), offset);
+        return countryRepository.findAll(limit, offset);
     }
 
     @GetMapping("/{iso2}")
