@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="offline_title">Offline data</string>
+    <string name="download_countries">Download all countries</string>
+    <string name="saved_countries">Saved countries: %1$d</string>
+    <string name="recent_views">Recently viewed: %1$d</string>
+    <string name="download_regions">Download regions and geometry</string>
+</resources>
