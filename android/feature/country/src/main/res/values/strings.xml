@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="country_profile">Country profile</string>
+    <string name="retry">Retry</string>
+    <string name="country_capital">Capital</string>
+    <string name="country_not_recorded">No data recorded</string>
+    <string name="country_population">Population</string>
+    <string name="country_area">Area (km²)</string>
+    <string name="country_admin_regions">First-level administrative divisions</string>
+    <string name="country_show_regions">View provinces and regions</string>
+    <string name="country_sources_version">Data sources and version</string>
+    <string name="source">Source</string>
+    <string name="license">License</string>
+    <string name="dataset_version">Dataset version</string>
+    <string name="reference_date">Reference date</string>
+</resources>
