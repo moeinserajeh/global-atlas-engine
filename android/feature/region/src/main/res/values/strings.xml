@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="region_details">Region details</string>
+    <string name="retry">Retry</string>
+    <string name="country">Country</string>
+    <string name="country_code">Country code</string>
+    <string name="region_code">Region code</string>
+    <string name="not_recorded">Not recorded</string>
+    <string name="admin_level">Administrative level</string>
+    <string name="approx_area">Approximate area (km²)</string>
+    <string name="geometry_validity">Geometry validity</string>
+    <string name="valid">Valid</string>
+    <string name="unknown_invalid">Unknown or invalid</string>
+    <string name="source_version">Data source and version</string>
+    <string name="source">Source</string>
+    <string name="license">License</string>
+    <string name="version">Version</string>
+    <string name="unknown">Unknown</string>
+    <string name="regions_title">Provinces and regions %1$s</string>
+    <string name="no_regions">No regions are recorded for this country.</string>
+</resources>
