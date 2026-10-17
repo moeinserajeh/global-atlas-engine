@@ -107,3 +107,8 @@ The Android client is organized into `app`, reusable `core` modules, and `featur
 ## Product requirements and delivery checklist
 
 See the [complete PRD with implementation checkboxes](docs/PRD.md). Checked boxes record committed implementation artifacts; MVP release acceptance remains separately tracked and unverified until CI and end-to-end testing pass.
+
+## Product requirements
+
+- [PRD فارسی — وضعیت نیازمندی‌ها و چک‌لیست اجرا](docs/PRD.fa.md)
+- [English PRD — implementation status and acceptance criteria](docs/PRD.md)
