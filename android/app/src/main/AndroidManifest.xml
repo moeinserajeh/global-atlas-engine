@@ -6,7 +6,7 @@
         android:allowBackup="false"
         android:label="Global Atlas"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="${usesCleartextTraffic}"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
