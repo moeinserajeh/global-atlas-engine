@@ -13,12 +13,30 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: backend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_DB: atlas
+          POSTGRES_USER: atlas
+          POSTGRES_PASSWORD: atlas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U atlas -d atlas"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -26,5 +44,9 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: Test and package
+      - name: Verify
+        env:
+          DB_URL: jdbc:postgresql://localhost:5432/atlas
+          DB_USERNAME: atlas
+          DB_PASSWORD: atlas
         run: mvn --batch-mode --no-transfer-progress verify
