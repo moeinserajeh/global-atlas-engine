@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -169,14 +170,14 @@ fun DownloadsRoute(modifier: Modifier = Modifier, viewModel: DownloadsViewModel 
     val recent by viewModel.recent.collectAsState()
     val state by viewModel.state.collectAsState()
     Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text("داده‌های آفلاین", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.offline_title), style = MaterialTheme.typography.headlineSmall)
         Button(onClick = { viewModel.downloadCountries() }, enabled = !state.isWorking, modifier = Modifier.fillMaxWidth()) {
-            Text("دانلود فهرست همهٔ کشورها")
+            Text(stringResource(R.string.download_countries))
         }
         if (state.isWorking) CircularProgressIndicator()
         state.status?.let { Text(it) }
         state.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-        Text("کشورهای ذخیره‌شده: ${countries.size}")
+        Text(stringResource(R.string.saved_countries, countries.size))
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(countries, key = { it.iso2 }) { country ->
                 Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -185,12 +186,12 @@ fun DownloadsRoute(modifier: Modifier = Modifier, viewModel: DownloadsViewModel 
                         Text(country.iso2, style = MaterialTheme.typography.bodySmall)
                     }
                     Button(onClick = { viewModel.downloadRegions(country.iso2) }, enabled = !state.isWorking) {
-                        Text("دانلود مناطق و هندسه")
+                        Text(stringResource(R.string.download_regions))
                     }
                 }
             }
         }
-        Text("بازدیدهای اخیر: ${recent.size}", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.recent_views, recent.size), style = MaterialTheme.typography.titleMedium)
         if (recent.isNotEmpty()) {
             LazyColumn(modifier = Modifier.weight(0.5f)) {
                 items(recent, key = { it.entityType + ":" + it.entityId }) { item ->
