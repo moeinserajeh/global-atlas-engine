@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
@@ -72,7 +73,7 @@ fun AtlasMapScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var map by remember { mutableStateOf<MapLibreMap?>(null) }
-    var selectedName by remember { mutableStateOf("برای انتخاب کشور روی نقشه بزنید") }
+    var selectedName by remember { mutableStateOf("") }
     var selectedIso2 by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(true) }
     var mapError by remember { mutableStateOf<String?>(null) }
@@ -133,7 +134,7 @@ fun AtlasMapScreen(
                             }
                         } catch (_: Exception) {
                             mainHandler.post {
-                                mapError = "مرزهای کشورها دریافت نشد؛ اجرای بک‌اند و ورود داده‌های جغرافیایی را بررسی کنید."
+                                mapError = context.getString(R.string.map_load_countries_error)
                                 loading = false
                             }
                         }
@@ -149,7 +150,7 @@ fun AtlasMapScreen(
                             val name = props?.get("nameFa").safeJsonString()
                                 .ifBlank { props?.get("nameEn").safeJsonString() }
                             val id = props?.get("id").safeJsonLong()
-                            selectedName = name.ifBlank { "منطقه انتخاب شد" }
+                            selectedName = name.ifBlank { context.getString(R.string.map_region_selected) }
                             if (id != null) {
                                 (activeStyle.getLayer(REGION_SELECTED) as? FillLayer)?.setFilter(
                                     Expression.eq(Expression.get("id"), Expression.literal(id))
@@ -162,7 +163,7 @@ fun AtlasMapScreen(
                         val countries = mapLibreMap.queryRenderedFeatures(screenPoint, COUNTRY_FILL)
                         if (countries.isEmpty()) {
                             selectedIso2 = null
-                            selectedName = "برای انتخاب کشور روی نقشه بزنید"
+                            selectedName = context.getString(R.string.map_select_country)
                             (activeStyle.getLayer(COUNTRY_SELECTED) as? FillLayer)?.setFilter(
                                 Expression.eq(Expression.get("iso2"), Expression.literal("__none__"))
                             )
@@ -228,7 +229,7 @@ fun AtlasMapScreen(
                                     }
                                 }
                             } catch (_: Exception) {
-                                mainHandler.post { mapError = "استان‌ها یا مناطق این کشور دریافت نشدند." }
+                                mainHandler.post { mapError = context.getString(R.string.map_load_regions_error) }
                             }
                         }
                         true
@@ -286,14 +287,14 @@ fun AtlasMapScreen(
                         500
                     )
                 }
-            }) { Text("بازنشانی") }
+            }) { Text(stringResource(R.string.map_reset)) }
         }
         Surface(
             modifier = Modifier.align(Alignment.BottomStart).padding(8.dp),
             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
             tonalElevation = 2.dp
         ) {
-            Text("© OpenStreetMap contributors · © MapLibre", modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp), style = MaterialTheme.typography.labelSmall)
+            Text(stringResource(R.string.map_attribution), modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp), style = MaterialTheme.typography.labelSmall)
         }
         if (loading) CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         if (mapError != null) {
