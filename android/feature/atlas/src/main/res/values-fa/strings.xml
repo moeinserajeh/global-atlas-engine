@@ -6,4 +6,9 @@
     <string name="map_load_regions_error">استان‌ها یا مناطق این کشور دریافت نشدند.</string>
     <string name="map_reset">بازنشانی</string>
     <string name="map_attribution">© OpenStreetMap contributors · © MapLibre</string>
+    <string name="atlas_search_hint">جست‌وجوی کشور یا استان</string>
+    <string name="clear">پاک‌کردن</string>
+    <string name="retry">تلاش دوباره</string>
+    <string name="no_results">نتیجه‌ای پیدا نشد</string>
+    <string name="country_details_for">جزئیات %1$s</string>
 </resources>

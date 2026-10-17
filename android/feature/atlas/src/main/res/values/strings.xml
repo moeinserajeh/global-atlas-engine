@@ -6,4 +6,9 @@
     <string name="map_load_regions_error">Could not load provinces or regions for this country.</string>
     <string name="map_reset">Reset</string>
     <string name="map_attribution">© OpenStreetMap contributors · © MapLibre</string>
+    <string name="atlas_search_hint">Search for a country or region</string>
+    <string name="clear">Clear</string>
+    <string name="retry">Retry</string>
+    <string name="no_results">No results found</string>
+    <string name="country_details_for">Details: %1$s</string>
 </resources>

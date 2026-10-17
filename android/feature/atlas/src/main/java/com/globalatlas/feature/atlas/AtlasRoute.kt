@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -55,10 +56,12 @@ fun AtlasRoute(
                     onValueChange = { viewModel.dispatch(AtlasIntent.SearchChanged(it)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    label = { Text("جست‌وجوی کشور یا استان") },
+                    label = { Text(stringResource(R.string.atlas_search_hint)) },
                     trailingIcon = {
                         if (state.searchQuery.isNotEmpty()) {
-                            TextButton(onClick = { viewModel.dispatch(AtlasIntent.ClearSearch) }) { Text("پاک") }
+                            TextButton(onClick = { viewModel.dispatch(AtlasIntent.ClearSearch) }) {
+                                Text(stringResource(R.string.clear))
+                            }
                         }
                     }
                 )
@@ -66,49 +69,72 @@ fun AtlasRoute(
                 state.searchError?.let {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(it, Modifier.weight(1f), color = MaterialTheme.colorScheme.error)
-                        TextButton(onClick = { viewModel.dispatch(AtlasIntent.RetrySearch) }) { Text("تلاش دوباره") }
-                    }
-                }
-                if (state.searchQuery.trim().length >= 2 && !state.isSearching &&
-                    state.searchError == null && state.searchResults.isEmpty()
-                ) Text("نتیجه‌ای پیدا نشد")
-
-                if (state.searchResults.isNotEmpty()) LazyColumn {
-                    items(
-                        state.searchResults,
-                        key = { it.get("_type").asString + ":" + (it.get("id")?.toString() ?: it.get("iso2")?.asString.orEmpty()) }
-                    ) { item ->
-                        val type = item.get("_type")?.asString.orEmpty()
-                        val title = item.get("nameFa")?.takeUnless { it.isJsonNull }?.asString
-                            ?: item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
-                        val subtitle = if (type == "REGION") {
-                            item.get("countryNameFa")?.takeUnless { it.isJsonNull }?.asString
-                                ?: item.get("countryNameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
-                        } else item.get("iso2")?.asString.orEmpty()
-                        Column(
-                            Modifier.fillMaxWidth().clickable {
-                                if (type == "COUNTRY") {
-                                    val iso2 = item.get("iso2")?.asString.orEmpty()
-                                    viewModel.dispatch(AtlasIntent.CountrySelected(iso2, title))
-                                    onCountrySelected(iso2, title)
-                                } else {
-                                    val id = item.get("id")?.asLong ?: -1L
-                                    viewModel.dispatch(AtlasIntent.RegionSelected(id, title))
-                                    onRegionSelected(id, title)
-                                }
-                                viewModel.dispatch(AtlasIntent.ClearSearch)
-                            }.padding(vertical = 8.dp)
-                        ) {
-                            Text(title, style = MaterialTheme.typography.titleSmall)
-                            Text(subtitle, style = MaterialTheme.typography.bodySmall)
+                        TextButton(onClick = { viewModel.dispatch(AtlasIntent.RetrySearch) }) {
+                            Text(stringResource(R.string.retry))
                         }
                     }
                 }
-                if (!state.selectedCountryIso2.isNullOrBlank()) {
+                if (
+                    state.searchQuery.trim().length >= 2 &&
+                    !state.isSearching &&
+                    state.searchError == null &&
+                    state.searchResults.isEmpty()
+                ) {
+                    Text(stringResource(R.string.no_results))
+                }
+
+                if (state.searchResults.isNotEmpty()) {
+                    LazyColumn {
+                        items(
+                            state.searchResults,
+                            key = {
+                                it.get("_type").asString + ":" +
+                                    (it.get("id")?.toString() ?: it.get("iso2")?.asString.orEmpty())
+                            }
+                        ) { item ->
+                            val type = item.get("_type")?.asString.orEmpty()
+                            val title = item.get("nameFa")?.takeUnless { it.isJsonNull }?.asString
+                                ?: item.get("nameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
+                            val subtitle = if (type == "REGION") {
+                                item.get("countryNameFa")?.takeUnless { it.isJsonNull }?.asString
+                                    ?: item.get("countryNameEn")?.takeUnless { it.isJsonNull }?.asString.orEmpty()
+                            } else {
+                                item.get("iso2")?.asString.orEmpty()
+                            }
+                            Column(
+                                Modifier.fillMaxWidth().clickable {
+                                    if (type == "COUNTRY") {
+                                        val iso2 = item.get("iso2")?.asString.orEmpty()
+                                        viewModel.dispatch(AtlasIntent.CountrySelected(iso2, title))
+                                        onCountrySelected(iso2, title)
+                                    } else {
+                                        val id = item.get("id")?.asLong ?: -1L
+                                        viewModel.dispatch(AtlasIntent.RegionSelected(id, title))
+                                        onRegionSelected(id, title)
+                                    }
+                                    viewModel.dispatch(AtlasIntent.ClearSearch)
+                                }.padding(vertical = 8.dp)
+                            ) {
+                                Text(title, style = MaterialTheme.typography.titleSmall)
+                                Text(subtitle, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+                }
+                state.selectedCountryIso2?.takeIf(String::isNotBlank)?.let { iso2 ->
                     Button(
-                        onClick = { onCountrySelected(state.selectedCountryIso2!!, state.selectedCountryName.orEmpty()) },
+                        onClick = {
+                            onCountrySelected(iso2, state.selectedCountryName.orEmpty())
+                        },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("جزئیات ${state.selectedCountryName ?: state.selectedCountryIso2}") }
+                    ) {
+                        Text(
+                            stringResource(
+                                R.string.country_details_for,
+                                state.selectedCountryName ?: iso2
+                            )
+                        )
+                    }
                 }
             }
         }

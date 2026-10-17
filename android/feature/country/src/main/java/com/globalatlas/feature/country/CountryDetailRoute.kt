@@ -12,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +41,9 @@ fun CountryDetailRoute(
             state.isLoading -> CircularProgressIndicator()
             state.error != null -> {
                 Text(state.error!!, color = MaterialTheme.colorScheme.error)
-                Button(onClick = { viewModel.dispatch(CountryDetailIntent.Retry) }) { Text(stringResource(R.string.retry)) }
+                Button(onClick = { viewModel.dispatch(CountryDetailIntent.Retry) }) {
+                    Text(stringResource(R.string.retry))
+                }
             }
             state.country != null -> {
                 val item = state.country!!
@@ -56,18 +57,43 @@ fun CountryDetailRoute(
                     InfoCard("ISO-2", item.stringValue("iso2"))
                     InfoCard("ISO-3", item.stringValue("iso3"))
                 }
-                InfoCard(stringResource(R.string.country_capital), item.stringValue("capital").ifBlank { stringResource(R.string.country_not_recorded) })
-                InfoCard(stringResource(R.string.country_population), item.longValue("population")?.let(::formatNumber) ?: "اطلاعات ثبت نشده")
-                InfoCard(stringResource(R.string.country_area), item.decimalValue("areaKm2")?.let(::formatNumber) ?: "اطلاعات ثبت نشده")
-                InfoCard(stringResource(R.string.country_admin_regions), item.longValue("regionCount")?.let(::formatNumber) ?: "—")
-                Button(onClick = { onShowRegions(item.stringValue("iso2")) }, modifier = Modifier.fillMaxWidth()) {
+                InfoCard(
+                    stringResource(R.string.country_capital),
+                    item.stringValue("capital").ifBlank { stringResource(R.string.country_not_recorded) }
+                )
+                InfoCard(
+                    stringResource(R.string.country_population),
+                    item.longValue("population")?.let(::formatNumber)
+                        ?: stringResource(R.string.country_not_recorded)
+                )
+                InfoCard(
+                    stringResource(R.string.country_area),
+                    item.decimalValue("areaKm2")?.let(::formatNumber)
+                        ?: stringResource(R.string.country_not_recorded)
+                )
+                InfoCard(
+                    stringResource(R.string.country_admin_regions),
+                    item.longValue("regionCount")?.let(::formatNumber) ?: "—"
+                )
+                Button(
+                    onClick = { onShowRegions(item.stringValue("iso2")) },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     Text(stringResource(R.string.country_show_regions))
                 }
                 Text(stringResource(R.string.country_sources_version), style = MaterialTheme.typography.titleMedium)
-                InfoCard(stringResource(R.string.source), item.stringValue("dataSource").ifBlank { stringResource(R.string.country_not_recorded) })
-                InfoCard(stringResource(R.string.license), item.stringValue("dataLicense").ifBlank { "ثبت نشده" })
-                InfoCard(stringResource(R.string.dataset_version), item.stringValue("datasetVersion").ifBlank { stringResource(R.string.country_not_recorded) })
-                InfoCard(stringResource(R.string.reference_date), item.stringValue("referenceDate").ifBlank { "نامشخص" })
+                InfoCard(stringResource(R.string.source), item.stringValue("dataSource").ifBlank {
+                    stringResource(R.string.country_not_recorded)
+                })
+                InfoCard(stringResource(R.string.license), item.stringValue("dataLicense").ifBlank {
+                    stringResource(R.string.country_not_recorded)
+                })
+                InfoCard(stringResource(R.string.dataset_version), item.stringValue("datasetVersion").ifBlank {
+                    stringResource(R.string.country_not_recorded)
+                })
+                InfoCard(stringResource(R.string.reference_date), item.stringValue("referenceDate").ifBlank {
+                    stringResource(R.string.country_not_recorded)
+                })
             }
         }
     }
