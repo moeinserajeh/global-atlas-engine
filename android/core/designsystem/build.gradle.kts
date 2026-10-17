@@ -1,7 +1,7 @@
 plugins { id("com.android.library"); id("org.jetbrains.kotlin.plugin.compose") }
 android {
     namespace = "com.globalatlas.core.designsystem"
-    compileSdk = 37
+    compileSdk = 36
     defaultConfig { minSdk = 26 }
     buildFeatures { compose = true }
 }
