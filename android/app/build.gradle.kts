@@ -9,7 +9,7 @@ android {
     namespace = "com.globalatlas"
     compileSdk = 37
 
-    defaultConfig {
+    defaultConfig {\n        buildConfigField("String", "ATLAS_BASE_URL", "\\"http://10.0.2.2:8080/\\")
         applicationId = "com.globalatlas"
         minSdk = 26
         targetSdk = 37
@@ -18,7 +18,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures { compose = true }
+    buildFeatures {\n        compose = true\n        buildConfig = true\n    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -39,6 +39,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.11.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
     implementation("com.google.dagger:hilt-android:2.60.1")
     ksp("com.google.dagger:hilt-compiler:2.60.1")
