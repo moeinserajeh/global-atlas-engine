@@ -1,7 +1,5 @@
 package com.globalatlas.feature.atlas
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -74,7 +72,7 @@ fun AtlasMapScreen(
                             connection.readTimeout = 30000
                             val json = connection.inputStream.bufferedReader().use { it.readText() }
                             val sourceGeoJson = GeoJsonSource("country-boundaries", json)
-                            Handler(Looper.getMainLooper()).post {
+                            mapView.post {
                                 map.style?.let { currentStyle ->
                                     currentStyle.addSource(sourceGeoJson)
                                     currentStyle.addLayer(FillLayer("country-fill", "country-boundaries").withProperties(
@@ -120,7 +118,7 @@ fun AtlasMapScreen(
                                         regionConnection.connectTimeout = 15000
                                         regionConnection.readTimeout = 30000
                                         val regionJson = regionConnection.inputStream.bufferedReader().use { it.readText() }
-                                        Handler(Looper.getMainLooper()).post {
+                                        mapView.post {
                                             map.style?.let { currentStyle ->
                                                 if (currentStyle.getSource("region-boundaries") == null) {
                                                     currentStyle.addSource(GeoJsonSource("region-boundaries", regionJson))
