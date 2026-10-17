@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_title">جست‌وجوی اطلس</string>
+    <string name="search_hint">نام کشور یا استان</string>
+    <string name="clear">پاک</string>
+    <string name="retry">تلاش مجدد</string>
+    <string name="no_results">نتیجه‌ای پیدا نشد.</string>
+</resources>
