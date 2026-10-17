@@ -16,7 +16,7 @@ object DatabaseModule {
     @Singleton
     fun provideAtlasDatabase(@ApplicationContext context: Context): AtlasDatabase =
         Room.databaseBuilder(context, AtlasDatabase::class.java, "global-atlas.db")
-            .fallbackToDestructiveMigration()
+            .addMigrations(AtlasDatabase.MIGRATION_1_2)
             .build()
 
     @Provides
