@@ -12,9 +12,15 @@ android {
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21) } }
 dependencies {
- implementation(project(":feature:atlas")); implementation(project(":core:designsystem"))
+ implementation(project(":feature:atlas"))
+ implementation(project(":core:designsystem"))
+ implementation(project(":core:database"))
+ implementation(project(":core:datastore"))
  implementation(platform("androidx.compose:compose-bom:2026.09.00"))
- implementation("androidx.activity:activity-compose:1.13.0"); implementation("androidx.compose.ui:ui"); implementation("androidx.compose.material3:material3")
- implementation("com.google.dagger:hilt-android:2.60.1"); ksp("com.google.dagger:hilt-compiler:2.60.1")
+ implementation("androidx.activity:activity-compose:1.13.0")
+ implementation("androidx.compose.ui:ui")
+ implementation("androidx.compose.material3:material3")
+ implementation("com.google.dagger:hilt-android:2.60.1")
+ ksp("com.google.dagger:hilt-compiler:2.60.1")
  testImplementation("junit:junit:4.13.2")
 }
