@@ -18,4 +18,5 @@
     <string name="unknown">Unknown</string>
     <string name="regions_title">Provinces and regions %1$s</string>
     <string name="no_regions">No regions are recorded for this country.</string>
+    <string name="reference_date">Reference date</string>
 </resources>
