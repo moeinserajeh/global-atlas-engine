@@ -76,3 +76,14 @@ Suggested dataset-level attribution:
 > Administrative boundaries: geoBoundaries Database (www.geoboundaries.org). See per-layer source and license metadata stored with each imported record.
 
 Before release, archive the generated report, review failed layers and missing ADM1 coverage, check the upstream terms for each record, and expose attribution in the app's About/Data Sources screen.
+
+
+## Full real-data validation in GitHub Actions
+
+The repository includes a manually triggered workflow at **Actions → Geographic Data Validation → Run workflow**:
+- `both` downloads and imports ADM0 and ADM1 into a fresh, disposable PostGIS service.
+- Set `country_limit=1` for a quick connectivity/schema smoke test; use `0` for all upstream layers.
+- Enable `fail_on_missing_adm1` when reviewing whether each imported country has first-level administrative divisions.
+- The workflow uploads timestamped JSON and CSV reports as an Actions artifact even when the import fails.
+
+A successful workflow validates the source layers fetched at that run and the disposable PostGIS import. It does **not** prove production database coverage or replace review of failed layers, source licenses, and data gaps. Download the artifact from the run and review the `failures`, `countries`, `adm1`, and `countries_adm1_coverage` fields before marking geographic coverage as accepted.
