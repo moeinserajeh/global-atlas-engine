@@ -13,4 +13,7 @@
     <string name="data_source">Data source</string>
     <string name="retry">Retry</string>
     <string name="clear_history">Clear history</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_offline">Offline</string>
 </resources>
