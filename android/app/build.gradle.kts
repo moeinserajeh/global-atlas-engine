@@ -16,6 +16,10 @@ android {
   testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
  }
  buildFeatures { compose = true; buildConfig = true }
+ buildTypes {
+  debug { manifestPlaceholders["usesCleartextTraffic"] = "true" }
+  release { manifestPlaceholders["usesCleartextTraffic"] = "false"; isMinifyEnabled = false }
+ }
  compileOptions { sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaVersion.VERSION_21 }
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21) } }
