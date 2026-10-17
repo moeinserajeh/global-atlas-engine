@@ -16,6 +16,7 @@ from typing import Any
 
 import psycopg
 import requests
+import pycountry
 
 API = "https://www.geoboundaries.org/api/current/gbOpen/ALL/{level}/"
 ATTRIBUTION = "geoBoundaries (www.geoboundaries.org), gbOpen; attribution required"
@@ -85,9 +86,10 @@ def insert_country(cur: psycopg.Cursor, meta: dict[str, Any], feature: dict[str,
     iso3 = str(meta.get("boundaryISO") or "").upper()
     iso2 = get_prop(props, "ISO2", "iso2", "ISO_A2", default="")
     if len(iso2) != 2:
-        # ISO-2 is not always included in geoBoundaries properties. Keep an explicit
-        # import error rather than guessing country codes from names.
-        raise ValueError(f"Missing ISO-3166 alpha-2 code for {iso3}; provide a reviewed mapping.")
+        iso_entry = pycountry.countries.get(alpha_3=iso3)
+        if iso_entry is None:
+            raise ValueError(f"No ISO-3166 mapping for {iso3}; provide a reviewed mapping.")
+        iso2 = iso_entry.alpha_2
     name = get_prop(props, "shapeName", "NAME_EN", "name", default=str(meta.get("boundaryName") or iso3))
     source = get_prop(props, "source", default=str(meta.get("boundarySource") or ATTRIBUTION))
     license_name = str(meta.get("boundaryLicense") or "See geoBoundaries metadata")
@@ -169,10 +171,6 @@ def main() -> int:
                             conn.commit()
                             print(f"[{index}/{len(layers)}] country {iso3} imported")
                         else:
-                            country_meta = next((x for x in metadata_for("ADM0")
-                                                 if str(x.get("boundaryISO") or "").upper() == iso3), None)
-                            if country_meta is None:
-                                raise ValueError("No matching ADM0 metadata; import ADM0 first")
                             # ISO-2 lookup must be based on the already imported ADM0 row.
                             cur.execute("SELECT id FROM countries WHERE iso3=%s", (iso3,))
                             country_row = cur.fetchone()
