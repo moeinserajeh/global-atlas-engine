@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
@@ -36,12 +37,12 @@ fun CountryDetailRoute(
         modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Text("پروفایل کشور", style = MaterialTheme.typography.headlineSmall)
+        Text(stringResource(R.string.country_profile), style = MaterialTheme.typography.headlineSmall)
         when {
             state.isLoading -> CircularProgressIndicator()
             state.error != null -> {
                 Text(state.error!!, color = MaterialTheme.colorScheme.error)
-                Button(onClick = { viewModel.dispatch(CountryDetailIntent.Retry) }) { Text("تلاش دوباره") }
+                Button(onClick = { viewModel.dispatch(CountryDetailIntent.Retry) }) { Text(stringResource(R.string.retry)) }
             }
             state.country != null -> {
                 val item = state.country!!
@@ -55,18 +56,18 @@ fun CountryDetailRoute(
                     InfoCard("ISO-2", item.stringValue("iso2"))
                     InfoCard("ISO-3", item.stringValue("iso3"))
                 }
-                InfoCard("پایتخت", item.stringValue("capital").ifBlank { "اطلاعات ثبت نشده" })
-                InfoCard("جمعیت", item.longValue("population")?.let(::formatNumber) ?: "اطلاعات ثبت نشده")
-                InfoCard("مساحت (کیلومتر مربع)", item.decimalValue("areaKm2")?.let(::formatNumber) ?: "اطلاعات ثبت نشده")
-                InfoCard("تقسیمات اداری سطح اول", item.longValue("regionCount")?.let(::formatNumber) ?: "—")
+                InfoCard(stringResource(R.string.country_capital), item.stringValue("capital").ifBlank { stringResource(R.string.country_not_recorded) })
+                InfoCard(stringResource(R.string.country_population), item.longValue("population")?.let(::formatNumber) ?: "اطلاعات ثبت نشده")
+                InfoCard(stringResource(R.string.country_area), item.decimalValue("areaKm2")?.let(::formatNumber) ?: "اطلاعات ثبت نشده")
+                InfoCard(stringResource(R.string.country_admin_regions), item.longValue("regionCount")?.let(::formatNumber) ?: "—")
                 Button(onClick = { onShowRegions(item.stringValue("iso2")) }, modifier = Modifier.fillMaxWidth()) {
-                    Text("مشاهدهٔ استان‌ها و مناطق")
+                    Text(stringResource(R.string.country_show_regions))
                 }
-                Text("منابع و نسخهٔ داده", style = MaterialTheme.typography.titleMedium)
-                InfoCard("منبع", item.stringValue("dataSource").ifBlank { "ثبت نشده" })
-                InfoCard("مجوز", item.stringValue("dataLicense").ifBlank { "ثبت نشده" })
-                InfoCard("نسخهٔ داده", item.stringValue("datasetVersion").ifBlank { "نامشخص" })
-                InfoCard("تاریخ مرجع", item.stringValue("referenceDate").ifBlank { "نامشخص" })
+                Text(stringResource(R.string.country_sources_version), style = MaterialTheme.typography.titleMedium)
+                InfoCard(stringResource(R.string.source), item.stringValue("dataSource").ifBlank { stringResource(R.string.country_not_recorded) })
+                InfoCard(stringResource(R.string.license), item.stringValue("dataLicense").ifBlank { "ثبت نشده" })
+                InfoCard(stringResource(R.string.dataset_version), item.stringValue("datasetVersion").ifBlank { stringResource(R.string.country_not_recorded) })
+                InfoCard(stringResource(R.string.reference_date), item.stringValue("referenceDate").ifBlank { "نامشخص" })
             }
         }
     }
