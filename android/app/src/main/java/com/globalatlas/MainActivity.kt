@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -43,9 +44,9 @@ private fun AtlasNavigation() {
     Column(Modifier.fillMaxSize()) {
         Surface(tonalElevation = 2.dp) {
             Row(Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Button(onClick = { nav.navigate("atlas") { launchSingleTop = true } }, modifier = Modifier.weight(1f)) { Text("نقشه") }
-                Button(onClick = { nav.navigate("search") { launchSingleTop = true } }, modifier = Modifier.weight(1f)) { Text("جست‌وجو") }
-                Button(onClick = { nav.navigate("downloads") { launchSingleTop = true } }, modifier = Modifier.weight(1f)) { Text("آفلاین") }
+                Button(onClick = { nav.navigate("atlas") { launchSingleTop = true } }, modifier = Modifier.weight(1f)) { Text(stringResource(com.globalatlas.R.string.nav_map)) }
+                Button(onClick = { nav.navigate("search") { launchSingleTop = true } }, modifier = Modifier.weight(1f)) { Text(stringResource(com.globalatlas.R.string.nav_search)) }
+                Button(onClick = { nav.navigate("downloads") { launchSingleTop = true } }, modifier = Modifier.weight(1f)) { Text(stringResource(com.globalatlas.R.string.nav_offline)) }
             }
         }
         NavHost(navController = nav, startDestination = "atlas", modifier = Modifier.weight(1f)) {
