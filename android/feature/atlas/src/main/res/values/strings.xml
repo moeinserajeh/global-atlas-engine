@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="map_select_country">Tap a country on the map to select it</string>
+    <string name="map_region_selected">Region selected</string>
+    <string name="map_load_countries_error">Could not load country boundaries. Check the backend and geographic data import.</string>
+    <string name="map_load_regions_error">Could not load provinces or regions for this country.</string>
+    <string name="map_reset">Reset</string>
+    <string name="map_attribution">© OpenStreetMap contributors · © MapLibre</string>
+</resources>
