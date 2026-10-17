@@ -18,4 +18,5 @@
     <string name="unknown">نامشخص</string>
     <string name="regions_title">استان‌ها و مناطق %1$s</string>
     <string name="no_regions">برای این کشور منطقه‌ای ثبت نشده است.</string>
+    <string name="reference_date">تاریخ مرجع</string>
 </resources>
