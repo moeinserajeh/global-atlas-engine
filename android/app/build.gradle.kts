@@ -6,7 +6,7 @@ plugins {
 }
 android {
  namespace = "com.globalatlas"
- compileSdk = 36
+ compileSdk = 37
  defaultConfig {
   applicationId = "com.globalatlas"
   minSdk = 26
