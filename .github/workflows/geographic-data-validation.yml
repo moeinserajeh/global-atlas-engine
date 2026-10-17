@@ -1,0 +1,78 @@
+name: Geographic Data Validation
+on:
+  workflow_dispatch:
+    inputs:
+      level:
+        description: Administrative level to import
+        type: choice
+        options: [both, ADM0, ADM1]
+        default: both
+        required: true
+      country_limit:
+        description: Optional trial limit (0 means all source layers)
+        type: number
+        default: 0
+        required: true
+      fail_on_missing_adm1:
+        description: Fail if any country has no ADM1 rows
+        type: boolean
+        default: false
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: geographic-data-validation
+  cancel-in-progress: false
+jobs:
+  import-and-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    services:
+      postgis:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: atlas
+          POSTGRES_USER: atlas
+          POSTGRES_PASSWORD: atlas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U atlas -d atlas"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: data-import/requirements.txt
+      - name: Install importer dependencies
+        run: python -m pip install -r data-import/requirements.txt
+      - name: Apply database schema
+        env:
+          PGPASSWORD: atlas
+        run: |
+          psql -h localhost -U atlas -d atlas -v ON_ERROR_STOP=1 -f backend/src/main/resources/db/migration/V1__create_atlas_schema.sql
+          psql -h localhost -U atlas -d atlas -v ON_ERROR_STOP=1 -f backend/src/main/resources/db/migration/V2__create_atlas_import_runs.sql
+      - name: Import geoBoundaries and validate coverage
+        env:
+          DATABASE_URL: postgresql://atlas:atlas@localhost:5432/atlas
+        run: |
+          args=(--level "${{ inputs.level }}" --report-dir data-import/reports)
+          if [ "${{ inputs.country_limit }}" -gt 0 ]; then
+            args+=(--limit "${{ inputs.country_limit }}")
+          fi
+          if [ "${{ inputs.fail_on_missing_adm1 }}" = "true" ]; then
+            args+=(--fail-on-missing-adm1)
+          fi
+          python data-import/import_geoboundaries.py "${args[@]}"
+      - name: Upload coverage and import reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: geographic-data-validation-${{ github.run_id }}
+          path: data-import/reports/*
+          if-no-files-found: warn
+          retention-days: 30
