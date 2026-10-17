@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Global Atlas</string>
+    <string name="search_countries">Search countries and regions</string>
+    <string name="loading">Loading…</string>
+    <string name="empty_results">No results found</string>
+    <string name="network_error">Could not load data. Check your connection and try again.</string>
+    <string name="country_details">Country details</string>
+    <string name="region_details">Region details</string>
+    <string name="favorites">Favorites</string>
+    <string name="recently_viewed">Recently viewed</string>
+    <string name="offline_data">Offline data</string>
+    <string name="data_source">Data source</string>
+    <string name="retry">Retry</string>
+    <string name="clear_history">Clear history</string>
+</resources>
