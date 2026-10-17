@@ -35,6 +35,18 @@ public class CountryController {
         return countryRepository.findAll(limit, offset);
     }
 
+    @GetMapping("/search")
+    public List<CountrySummary> searchCountries(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "20") int limit
+    ) {
+        String query = q == null ? "" : q.trim();
+        if (query.length() < 2 || query.length() > 100 || limit < 1 || limit > 100) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "q must contain 2..100 characters and limit must be 1..100");
+        }
+        return countryRepository.search(query, limit);
+    }
+
     @GetMapping("/{iso2}")
     public CountrySummary getCountry(@PathVariable String iso2) {
         if (!iso2.matches("(?i)[a-z]{2}")) {
