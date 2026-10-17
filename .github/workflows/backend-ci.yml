@@ -50,3 +50,5 @@ jobs:
           DB_USERNAME: atlas
           DB_PASSWORD: atlas
         run: mvn --batch-mode --no-transfer-progress verify
+      - name: Build release container image
+        run: docker build --pull -t global-atlas-api:test .
