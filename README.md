@@ -97,3 +97,8 @@ The repository includes a geoBoundaries gbOpen import script for ADM0 country ou
 ## Status
 
 Initial project documentation and CI/CD plan. The application, backend, and workflow files have not yet been added.
+
+
+## Android multi-module architecture
+
+The Android client is organized into `app`, reusable `core` modules, and `feature` modules. See [`android/ARCHITECTURE.md`](android/ARCHITECTURE.md) for module responsibilities and current implementation status. The Atlas map implementation lives in `feature:atlas`; Hilt network providers live in `core:network`.
