@@ -82,6 +82,18 @@ Use GitHub Actions as the initial CI/CD platform, with separate workflows for An
 - Keep production deployment separate from pull-request workflows; never expose deployment credentials to untrusted PR code.
 - Add Dependabot (or equivalent) for dependency update PRs and pin third-party GitHub Actions to reviewed versions or immutable SHAs.
 
+
+## Geographic data and interactive map
+
+The repository includes a geoBoundaries gbOpen import script for ADM0 country outlines and ADM1 first-level administrative divisions, plus MapLibre-based Android map rendering and GeoJSON endpoints.
+
+- Source and API documentation: https://www.geoboundaries.org/api.html
+- The geoBoundaries gbOpen product is documented as CC BY 4.0 compliant and requires attribution. The importer stores per-layer source/license/version metadata when provided.
+- Run the importer instructions in [data-import/README.md](data-import/README.md).
+- Map GeoJSON endpoints: `GET /api/v1/map/countries`, `GET /api/v1/map/countries/{iso2}/regions`, and `GET /api/v1/map/regions`.
+
+**Important:** the importer is code, not a bundled dataset. The database remains empty until the migration is applied and the import script is run against a reachable PostGIS instance. Review the import report and source coverage before claiming full worldwide coverage. Region availability varies by source and country.
+
 ## Status
 
 Initial project documentation and CI/CD plan. The application, backend, and workflow files have not yet been added.
