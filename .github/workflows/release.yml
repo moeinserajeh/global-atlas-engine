@@ -29,7 +29,7 @@ jobs:
       - name: Install Android SDK
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37" "platform-tools"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" "platform-tools"
       - name: Verify and assemble release APK
         run: gradle :app:lintRelease :app:testDebugUnitTest :app:assembleRelease --stacktrace
       - name: Upload unsigned APK

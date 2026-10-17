@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.globalatlas.core.database"
-    compileSdk = 37
+    compileSdk = 36
     defaultConfig { minSdk = 26 }
 }
 
