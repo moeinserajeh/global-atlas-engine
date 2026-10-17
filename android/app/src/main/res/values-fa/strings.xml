@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">اطلس جهان‌نما</string>
+    <string name="search_countries">جست‌وجوی کشورها و مناطق</string>
+    <string name="loading">در حال بارگذاری…</string>
+    <string name="empty_results">نتیجه‌ای پیدا نشد</string>
+    <string name="network_error">دریافت اطلاعات ممکن نشد. اتصال را بررسی و دوباره تلاش کنید.</string>
+    <string name="country_details">اطلاعات کشور</string>
+    <string name="region_details">اطلاعات منطقه</string>
+    <string name="favorites">علاقه‌مندی‌ها</string>
+    <string name="recently_viewed">بازدیدهای اخیر</string>
+    <string name="offline_data">اطلاعات آفلاین</string>
+    <string name="data_source">منبع داده</string>
+    <string name="retry">تلاش دوباره</string>
+    <string name="clear_history">پاک‌کردن تاریخچه</string>
+</resources>
