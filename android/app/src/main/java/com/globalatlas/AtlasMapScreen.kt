@@ -94,6 +94,13 @@ fun AtlasMapScreen(
                     }
                     map.addOnMapClickListener { point ->
                         val pixel = map.projection.toScreenLocation(point)
+                        val regionFeatures = map.queryRenderedFeatures(pixel, "region-fill")
+                        if (regionFeatures.isNotEmpty()) {
+                            val regionProperties = regionFeatures[0].properties()
+                            selectedName = regionProperties?.get("nameFa")?.takeIf { !it.isJsonNull }?.asString
+                                ?: regionProperties?.get("nameEn")?.asString.orEmpty()
+                            return@addOnMapClickListener true
+                        }
                         val features = map.queryRenderedFeatures(pixel, "country-fill")
                         if (features.isNotEmpty()) {
                             val properties = features[0].properties()
