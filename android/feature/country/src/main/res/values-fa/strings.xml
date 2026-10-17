@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="country_profile">پروفایل کشور</string>
+    <string name="retry">تلاش دوباره</string>
+    <string name="country_capital">پایتخت</string>
+    <string name="country_not_recorded">اطلاعات ثبت نشده</string>
+    <string name="country_population">جمعیت</string>
+    <string name="country_area">مساحت (کیلومتر مربع)</string>
+    <string name="country_admin_regions">تقسیمات اداری سطح اول</string>
+    <string name="country_show_regions">مشاهدهٔ استان‌ها و مناطق</string>
+    <string name="country_sources_version">منابع و نسخهٔ داده</string>
+    <string name="source">منبع</string>
+    <string name="license">مجوز</string>
+    <string name="dataset_version">نسخهٔ داده</string>
+    <string name="reference_date">تاریخ مرجع</string>
+</resources>
