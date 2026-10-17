@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="region_details">جزئیات منطقه</string>
+    <string name="retry">تلاش دوباره</string>
+    <string name="country">کشور</string>
+    <string name="country_code">کد کشور</string>
+    <string name="region_code">کد منطقه</string>
+    <string name="not_recorded">ثبت نشده</string>
+    <string name="admin_level">سطح اداری</string>
+    <string name="approx_area">مساحت تقریبی (کیلومتر مربع)</string>
+    <string name="geometry_validity">اعتبار هندسه</string>
+    <string name="valid">معتبر</string>
+    <string name="unknown_invalid">نامشخص یا نامعتبر</string>
+    <string name="source_version">منبع و نسخهٔ داده</string>
+    <string name="source">منبع</string>
+    <string name="license">مجوز</string>
+    <string name="version">نسخه</string>
+    <string name="unknown">نامشخص</string>
+    <string name="regions_title">استان‌ها و مناطق %1$s</string>
+    <string name="no_regions">برای این کشور منطقه‌ای ثبت نشده است.</string>
+</resources>
