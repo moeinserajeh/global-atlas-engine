@@ -9,7 +9,8 @@ android {
     namespace = "com.globalatlas"
     compileSdk = 37
 
-    defaultConfig {\n        buildConfigField("String", "ATLAS_BASE_URL", "\\"http://10.0.2.2:8080/\\")
+    defaultConfig {
+                buildConfigField("String", "ATLAS_BASE_URL", "\\\"http://10.0.2.2:8080/\\\"")
         applicationId = "com.globalatlas"
         minSdk = 26
         targetSdk = 37
@@ -18,7 +19,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures {\n        compose = true\n        buildConfig = true\n    }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
