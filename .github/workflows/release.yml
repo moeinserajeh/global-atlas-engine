@@ -33,7 +33,7 @@ jobs:
       - name: Verify and assemble release APK
         run: gradle :app:lintRelease :app:testDebugUnitTest :app:assembleRelease --stacktrace
       - name: Upload unsigned APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: global-atlas-android-unsigned-${{ github.ref_name }}
           path: android/app/build/outputs/apk/release/*.apk
